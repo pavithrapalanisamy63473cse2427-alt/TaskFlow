@@ -1,0 +1,553 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Tasks | TaskFlow</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages.css') }}">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+        <h2 class="logo">TaskFlow</h2>
+
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('create_task_page') }}">Create Task</a>
+            <a href="{{ url_for('view_tasks_page') }}" class="active">View Tasks</a>
+            <a href="{{ url_for('profile_page') }}">
+                <span>♙</span> My Profile
+            </a>
+        </nav>
+
+        <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <div>
+                <h1>My Tasks</h1>
+                <p>Manage all your tasks in one place.</p>
+            </div>
+
+            <a href="{{ url_for('create_task_page') }}" class="add-task-button">
+                + Create Task
+            </a>
+        </header>
+
+        <section class="task-controls">
+
+            <input
+                type="text"
+                id="search-task"
+                placeholder="Search tasks..."
+            >
+
+            <select id="filter-status">
+                <option value="All">All Tasks</option>
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
+            </select>
+
+            <select id="filter-priority">
+                <option value="All">All Priorities</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+            </select>
+
+            <select id="filter-category">
+                <option value="All">All Categories</option>
+                <option value="Work">Work</option>
+                <option value="Personal">Personal</option>
+                <option value="College">College</option>
+                <option value="Projects">Projects</option>
+                <option value="Other">Other</option>
+            </select>
+
+        </section>
+
+        <section id="task-container" class="task-list">
+            <p>Loading tasks...</p>
+        </section>
+
+        <p id="page-message"></p>
+
+    </main>
+</div>
+
+
+<!-- Edit Task Modal -->
+
+<div id="edit-modal" class="modal">
+    <div class="modal-content">
+
+        <h2>Edit Task</h2>
+
+        <form id="edit-task-form">
+            <input type="hidden" id="edit-id">
+
+            <div class="form-group">
+                <label>Task Title</label>
+                <input type="text" id="edit-title" maxlength="100" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="edit-description" maxlength="500"></textarea>
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label>Priority</label>
+                    <select id="edit-priority">
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Due Date</label>
+                    <input type="date" id="edit-date">
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label>Category</label>
+                <select id="edit-category">
+                    <option value="Work">Work</option>
+                    <option value="Personal">Personal</option>
+                    <option value="College">College</option>
+                    <option value="Projects">Projects</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <select id="edit-status">
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="save-button">Save Changes</button>
+
+                <button type="button" id="close-modal" class="cancel-button">
+                    Cancel
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+<script>
+
+    let allTasks = [];
+
+    const container = document.getElementById("task-container");
+    const message = document.getElementById("page-message");
+
+
+    // Load tasks from the database
+
+    async function loadTasks() {
+
+        try {
+
+            const response = await fetch("/api/tasks");
+
+            if (!response.ok) {
+                throw new Error("Unable to load tasks.");
+            }
+
+            allTasks = await response.json();
+
+            displayTasks();
+
+        } catch (error) {
+
+            container.textContent = error.message;
+
+        }
+
+    }
+
+
+    // Display and filter tasks
+
+    function displayTasks() {
+
+        const search = document.getElementById("search-task")
+            .value.toLowerCase();
+
+        const status = document.getElementById("filter-status").value;
+
+        const priority = document.getElementById("filter-priority").value;
+
+        const category = document.getElementById("filter-category").value;
+
+
+        const filteredTasks = allTasks.filter(task => {
+
+            const matchesSearch =
+                task.title.toLowerCase().includes(search) ||
+                (task.description || "").toLowerCase().includes(search) ||
+                (task.category || "Other").toLowerCase().includes(search);
+
+            const matchesStatus =
+                status === "All" || task.status === status;
+
+            const matchesPriority =
+                priority === "All" || task.priority === priority;
+
+            const matchesCategory =
+                category === "All" ||
+                (task.category || "Other") === category;
+
+            return matchesSearch &&
+                   matchesStatus &&
+                   matchesPriority &&
+                   matchesCategory;
+
+        });
+
+
+        container.replaceChildren();
+
+
+        if (filteredTasks.length === 0) {
+
+            const emptyMessage = document.createElement("p");
+
+            emptyMessage.textContent = "No matching tasks found.";
+
+            container.appendChild(emptyMessage);
+
+            return;
+
+        }
+
+
+        filteredTasks.forEach(task => {
+
+            const card = document.createElement("div");
+
+            card.className = "task-card";
+
+
+            const details = document.createElement("div");
+
+            details.className = "task-details";
+
+
+            const title = document.createElement("h3");
+
+            title.textContent = task.title;
+
+
+            const description = document.createElement("p");
+
+            description.textContent =
+                task.description || "No description";
+
+
+            const categoryInfo = document.createElement("p");
+
+            categoryInfo.textContent =
+                "Category: " + (task.category || "Other");
+
+
+            const info = document.createElement("p");
+
+            info.textContent =
+                "Priority: " + task.priority +
+                " | Due date: " + (task.due_date || "Not set") +
+                " | Status: " + task.status;
+
+
+            details.append(title, description, categoryInfo, info);
+
+
+            const actions = document.createElement("div");
+
+            actions.className = "task-actions";
+
+
+            const editButton = document.createElement("button");
+
+            editButton.textContent = "Edit";
+
+            editButton.className = "edit-button";
+
+            editButton.addEventListener("click", () => openEditModal(task));
+
+
+            const toggleButton = document.createElement("button");
+
+            toggleButton.textContent =
+                task.status === "Completed" ? "Mark Pending" : "Complete";
+
+            toggleButton.className = "complete-button";
+
+            toggleButton.addEventListener("click", () => toggleTask(task));
+
+
+            const deleteButton = document.createElement("button");
+
+            deleteButton.textContent = "Delete";
+
+            deleteButton.className = "delete-button";
+
+            deleteButton.addEventListener("click", () => deleteTask(task.id));
+
+
+            actions.append(editButton, toggleButton, deleteButton);
+
+            card.append(details, actions);
+
+            container.appendChild(card);
+
+        });
+
+    }
+
+
+    // Open edit modal
+
+    function openEditModal(task) {
+
+        document.getElementById("edit-id").value = task.id;
+
+        document.getElementById("edit-title").value = task.title;
+
+        document.getElementById("edit-description").value =
+            task.description || "";
+
+        document.getElementById("edit-priority").value = task.priority;
+
+        document.getElementById("edit-date").value = task.due_date || "";
+
+        document.getElementById("edit-category").value =
+            task.category || "Other";
+
+        document.getElementById("edit-status").value = task.status;
+
+        document.getElementById("edit-modal").style.display = "flex";
+
+    }
+
+
+    // Close edit modal
+
+    document.getElementById("close-modal").addEventListener("click", () => {
+
+        document.getElementById("edit-modal").style.display = "none";
+
+    });
+
+
+    // Update task
+
+    document.getElementById("edit-task-form").addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+            const id = document.getElementById("edit-id").value;
+
+
+            const updatedTask = {
+
+                title: document.getElementById("edit-title").value.trim(),
+
+                description: document.getElementById("edit-description").value.trim(),
+
+                priority: document.getElementById("edit-priority").value,
+
+                due_date: document.getElementById("edit-date").value,
+
+                category: document.getElementById("edit-category").value,
+
+                status: document.getElementById("edit-status").value
+
+            };
+
+
+            try {
+
+                const response = await fetch(`/api/tasks/${id}`, {
+
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(updatedTask)
+
+                });
+
+
+                const result = await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(result.error || "Update failed.");
+
+                }
+
+
+                document.getElementById("edit-modal").style.display = "none";
+
+                message.textContent = "Task updated successfully!";
+
+                await loadTasks();
+
+
+            } catch (error) {
+
+                message.textContent = error.message;
+
+            }
+
+        }
+
+    );
+
+
+    // Mark task as completed or pending
+
+    async function toggleTask(task) {
+
+        const updatedTask = {
+
+            title: task.title,
+
+            description: task.description || "",
+
+            priority: task.priority,
+
+            due_date: task.due_date || "",
+
+            category: task.category || "Other",
+
+            status: task.status === "Completed" ? "Pending" : "Completed"
+
+        };
+
+
+        try {
+
+            const response = await fetch(`/api/tasks/${task.id}`, {
+
+                method: "PUT",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(updatedTask)
+
+            });
+
+
+            if (!response.ok) {
+
+                throw new Error("Could not update task status.");
+
+            }
+
+
+            await loadTasks();
+
+
+        } catch (error) {
+
+            message.textContent = error.message;
+
+        }
+
+    }
+
+
+    // Delete task
+
+    async function deleteTask(id) {
+
+        if (!confirm("Are you sure you want to delete this task?")) {
+
+            return;
+
+        }
+
+
+        try {
+
+            const response = await fetch(`/api/tasks/${id}`, {
+
+                method: "DELETE"
+
+            });
+
+
+            const result = await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(result.error || "Delete failed.");
+
+            }
+
+
+            message.textContent = "Task deleted successfully!";
+
+            await loadTasks();
+
+
+        } catch (error) {
+
+            message.textContent = error.message;
+
+        }
+
+    }
+
+
+    // Filter event listeners
+
+    document.getElementById("search-task")
+        .addEventListener("input", displayTasks);
+
+    document.getElementById("filter-status")
+        .addEventListener("change", displayTasks);
+
+    document.getElementById("filter-priority")
+        .addEventListener("change", displayTasks);
+
+    document.getElementById("filter-category")
+        .addEventListener("change", displayTasks);
+
+
+    // Initial loading
+
+    loadTasks();
+
+</script>
+
+</body>
+</html>

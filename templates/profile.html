@@ -1,0 +1,702 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile | TaskFlow</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/pages.css') }}">
+
+    <style>
+        .profile-header {
+            margin-bottom: 35px;
+        }
+
+        .profile-header h1 {
+            color: #252044;
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .profile-header p {
+            color: #85849b;
+            font-size: 16px;
+        }
+
+        .profile-card {
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(30, 25, 70, 0.05);
+            max-width: 850px;
+        }
+
+        .profile-top {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #eeeef4;
+            margin-bottom: 30px;
+        }
+
+        .profile-avatar {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background: #eee9ff;
+            color: #6545dc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            font-weight: bold;
+        }
+
+        .profile-top h2 {
+            color: #252044;
+            font-size: 24px;
+            margin-bottom: 7px;
+        }
+
+        .profile-top p {
+            color: #85849b;
+            font-size: 15px;
+        }
+
+        .profile-section-title {
+            color: #252044;
+            font-size: 20px;
+            margin-bottom: 25px;
+        }
+
+        .profile-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .profile-detail {
+            background: #f8f8fc;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .profile-detail span {
+            display: block;
+            color: #85849b;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .profile-detail strong {
+            color: #252044;
+            font-size: 16px;
+            overflow-wrap: anywhere;
+        }
+
+        .profile-note {
+            margin-top: 30px;
+            padding: 18px;
+            background: #f0edff;
+            border-radius: 12px;
+            color: #6545dc;
+            font-size: 14px;
+        }
+
+        .profile-actions {
+            margin-top: 25px;
+        }
+
+        .edit-button, .save-button {
+            background: #6847df;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .edit-button:hover, .save-button:hover {
+            background: #5334c5;
+        }
+
+        .cancel-button {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 12px 24px;
+            border-radius: 9px;
+            background: #eeeeF5;
+            color: #55536b;
+            text-decoration: none;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .edit-form {
+            display: none;
+            margin-top: 25px;
+            border-top: 1px solid #eeeef4;
+            padding-top: 25px;
+        }
+
+        .edit-form.active {
+            display: block;
+        }
+
+        .edit-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .edit-form label {
+            display: block;
+            margin-bottom: 9px;
+            color: #252044;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .edit-form input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #dedee9;
+            border-radius: 9px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        .edit-form input:focus {
+            outline: none;
+            border-color: #6847df;
+        }
+
+        /* Change Password Section */
+
+        .password-section {
+            margin-top: 35px;
+            padding-top: 30px;
+            border-top: 1px solid #eeeef4;
+        }
+
+        .password-description {
+            color: #85849b;
+            font-size: 14px;
+            margin-top: -12px;
+            margin-bottom: 22px;
+        }
+
+        .password-form {
+            display: none;
+            margin-top: 25px;
+        }
+
+        .password-form.active {
+            display: block;
+        }
+
+        .password-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .password-form label {
+            display: block;
+            margin-bottom: 9px;
+            color: #252044;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .password-input-wrapper {
+            position: relative;
+        }
+
+        .password-input-wrapper input {
+            width: 100%;
+            padding: 13px;
+            padding-right: 85px;
+            border: 1px solid #dedee9;
+            border-radius: 9px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        .password-input-wrapper input:focus {
+            outline: none;
+            border-color: #6847df;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            color: #6847df;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .password-hint {
+            color: #85849b;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .flash-message {
+            padding: 13px 16px;
+            border-radius: 9px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .flash-message.success {
+            background: #e8f8ed;
+            color: #237a43;
+        }
+
+        .flash-message.error {
+            background: #fdecec;
+            color: #b83232;
+        }
+
+        @media (max-width: 700px) {
+            .profile-details {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-card {
+                padding: 22px;
+            }
+
+            .profile-top {
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <h2 class="logo">TaskFlow<span>.</span></h2>
+
+        <p class="sidebar-label">WORKSPACE</p>
+
+        <nav>
+
+            <a href="{{ url_for('home') }}">
+                <span>⌂</span> Dashboard
+            </a>
+
+            <a href="{{ url_for('create_task_page') }}">
+                <span>＋</span> Create Task
+            </a>
+
+            <a href="{{ url_for('view_tasks_page') }}">
+                <span>▤</span> My Tasks
+            </a>
+
+            <a href="{{ url_for('profile_page') }}" class="active">
+                <span>♙</span> My Profile
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <a href="{{ url_for('logout') }}" class="logout-link">
+                <span>↪</span> Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- Main Profile Content -->
+    <main class="main-content">
+
+        <header class="profile-header">
+
+            <h1>My Profile</h1>
+
+            <p>Manage your personal account information.</p>
+
+        </header>
+
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+
+        <!-- Profile Card -->
+        <section class="profile-card">
+
+            <div class="profile-top">
+
+                <div class="profile-avatar">
+                    {{ user['name'][0]|upper }}
+                </div>
+
+                <div>
+                    <h2>{{ user['name'] }}</h2>
+                    <p>TaskFlow Member</p>
+                </div>
+
+            </div>
+
+
+            <h3 class="profile-section-title">
+                Personal Information
+            </h3>
+
+
+            <div class="profile-details">
+
+                <div class="profile-detail">
+                    <span>Full Name</span>
+                    <strong>{{ user['name'] }}</strong>
+                </div>
+
+                <div class="profile-detail">
+                    <span>Email Address</span>
+                    <strong>{{ user['email'] }}</strong>
+                </div>
+
+                <div class="profile-detail">
+                    <span>Account ID</span>
+                    <strong>#{{ user['id'] }}</strong>
+                </div>
+
+                <div class="profile-detail">
+                    <span>Account Created</span>
+                    <strong>{{ user['created_at'] }}</strong>
+                </div>
+
+            </div>
+
+
+            <div class="profile-note">
+                Your account information is displayed here.
+                Keep your login credentials private.
+            </div>
+
+
+            <!-- Edit Profile Button -->
+            <div class="profile-actions">
+
+                <button type="button"
+                        class="edit-button"
+                        id="edit-profile-button">
+                    Edit Profile
+                </button>
+
+            </div>
+
+
+            <!-- Edit Profile Form -->
+            <form class="edit-form"
+                  id="edit-profile-form"
+                  action="{{ url_for('update_profile') }}"
+                  method="POST">
+
+                <h3 class="profile-section-title">
+                    Edit Personal Information
+                </h3>
+
+                <div class="form-group">
+
+                    <label for="name">Full Name</label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value="{{ user['name'] }}"
+                        maxlength="100"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="email">Email Address</label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{{ user['email'] }}"
+                        maxlength="254"
+                        required
+                    >
+
+                </div>
+
+
+                <button type="submit" class="save-button">
+                    Save Changes
+                </button>
+
+                <button type="button"
+                        class="cancel-button"
+                        id="cancel-edit-button">
+                    Cancel
+                </button>
+
+            </form>
+
+
+            <!-- Change Password Section -->
+            <div class="password-section">
+
+                <h3 class="profile-section-title">
+                    Security Settings
+                </h3>
+
+                <p class="password-description">
+                    Update your password to keep your account secure.
+                </p>
+
+                <button type="button"
+                        class="edit-button"
+                        id="change-password-button">
+                    Change Password
+                </button>
+
+
+                <!-- Change Password Form -->
+                <form class="password-form"
+                      id="password-form"
+                      action="{{ url_for('change_password') }}"
+                      method="POST">
+
+                    <div class="form-group">
+
+                        <label for="current-password">
+                            Current Password
+                        </label>
+
+                        <div class="password-input-wrapper">
+
+                            <input
+                                type="password"
+                                id="current-password"
+                                name="current_password"
+                                autocomplete="current-password"
+                                required
+                            >
+
+                            <button type="button"
+                                    class="toggle-password"
+                                    data-target="current-password">
+                                Show
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="new-password">
+                            New Password
+                        </label>
+
+                        <div class="password-input-wrapper">
+
+                            <input
+                                type="password"
+                                id="new-password"
+                                name="new_password"
+                                minlength="8"
+                                autocomplete="new-password"
+                                required
+                            >
+
+                            <button type="button"
+                                    class="toggle-password"
+                                    data-target="new-password">
+                                Show
+                            </button>
+
+                        </div>
+
+                        <p class="password-hint">
+                            Password must contain at least 8 characters.
+                        </p>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="confirm-password">
+                            Confirm New Password
+                        </label>
+
+                        <div class="password-input-wrapper">
+
+                            <input
+                                type="password"
+                                id="confirm-password"
+                                name="confirm_password"
+                                minlength="8"
+                                autocomplete="new-password"
+                                required
+                            >
+
+                            <button type="button"
+                                    class="toggle-password"
+                                    data-target="confirm-password">
+                                Show
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <button type="submit" class="save-button">
+                        Save New Password
+                    </button>
+
+                    <button type="button"
+                            class="cancel-button"
+                            id="cancel-password-button">
+                        Cancel
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script>
+
+// ---------------- EDIT PROFILE ----------------
+
+const editButton = document.getElementById("edit-profile-button");
+const editForm = document.getElementById("edit-profile-form");
+const cancelButton = document.getElementById("cancel-edit-button");
+
+editButton.addEventListener("click", function() {
+
+    editForm.classList.add("active");
+    editButton.style.display = "none";
+
+});
+
+cancelButton.addEventListener("click", function() {
+
+    editForm.classList.remove("active");
+    editButton.style.display = "inline-block";
+
+});
+
+
+// ---------------- CHANGE PASSWORD ----------------
+
+const changePasswordButton =
+    document.getElementById("change-password-button");
+
+const passwordForm =
+    document.getElementById("password-form");
+
+const cancelPasswordButton =
+    document.getElementById("cancel-password-button");
+
+
+changePasswordButton.addEventListener("click", function() {
+
+    passwordForm.classList.add("active");
+    changePasswordButton.style.display = "none";
+
+});
+
+
+cancelPasswordButton.addEventListener("click", function() {
+
+    passwordForm.classList.remove("active");
+    changePasswordButton.style.display = "inline-block";
+
+    passwordForm.reset();
+
+    document.querySelectorAll(".toggle-password").forEach(button => {
+        const input = document.getElementById(button.dataset.target);
+        input.type = "password";
+        button.textContent = "Show";
+    });
+
+});
+
+
+// ---------------- SHOW / HIDE PASSWORD ----------------
+
+document.querySelectorAll(".toggle-password").forEach(button => {
+
+    button.addEventListener("click", function() {
+
+        const input = document.getElementById(this.dataset.target);
+
+        if (input.type === "password") {
+            input.type = "text";
+            this.textContent = "Hide";
+        } else {
+            input.type = "password";
+            this.textContent = "Show";
+        }
+
+    });
+
+});
+
+
+// ---------------- PASSWORD CONFIRMATION ----------------
+
+passwordForm.addEventListener("submit", function(event) {
+
+    const newPassword =
+        document.getElementById("new-password").value;
+
+    const confirmPassword =
+        document.getElementById("confirm-password").value;
+
+    if (newPassword !== confirmPassword) {
+        event.preventDefault();
+        alert("New passwords do not match.");
+    }
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1349 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f5f6fa;
+    color: #25283b;
+}
+
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background: #24234b;
+    color: white;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: 700;
+    margin-bottom: 55px;
+}
+
+.menu-heading {
+    color: #a5a4c4;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    margin: 0 0 15px 10px;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.nav-item {
+    display: block;
+    padding: 14px;
+    border-radius: 9px;
+    color: #deddf0;
+    text-decoration: none;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    background: #4f46e5;
+    color: white;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+}
+
+.logout:hover {
+    background: #7f1d1d;
+}
+
+.main-content {
+    flex: 1;
+    padding: 35px 45px;
+    min-width: 0;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.topbar h1 {
+    font-size: 28px;
+}
+
+.topbar p {
+    color: #85889a;
+    margin-top: 7px;
+}
+
+.user-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #e0e7ff;
+    color: #4338ca;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.welcome-card {
+    background: linear-gradient(120deg, #3730a3, #6366f1);
+    color: white;
+    padding: 35px;
+    border-radius: 16px;
+    margin-bottom: 30px;
+}
+
+.welcome-card h2 {
+    font-size: 25px;
+    margin-bottom: 12px;
+}
+
+.welcome-card p {
+    color: #e0e7ff;
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.primary-button {
+    display: inline-block;
+    padding: 12px 20px;
+    background: white;
+    color: #4338ca;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.primary-button:hover {
+    background: #eef2ff;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card,
+.content-card {
+    background: white;
+    border: 1px solid #eaebf1;
+    border-radius: 13px;
+    padding: 24px;
+}
+
+.stat-card p {
+    color: #777b8c;
+    font-size: 14px;
+}
+
+.stat-card h2 {
+    font-size: 32px;
+    margin: 12px 0 5px;
+    color: #3730a3;
+}
+
+.stat-card span {
+    font-size: 12px;
+    color: #9698a6;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.section-heading h2 {
+    font-size: 19px;
+    margin-bottom: 6px;
+}
+
+.section-heading p {
+    color: #9294a1;
+    font-size: 13px;
+}
+
+.section-heading a {
+    color: #4f46e5;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.recent-list {
+    color: #777b8c;
+}
+
+.recent-task {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 17px 0;
+    border-bottom: 1px solid #eeeef3;
+}
+
+.recent-task:last-child {
+    border-bottom: none;
+}
+
+.recent-task h3 {
+    font-size: 15px;
+    color: #303247;
+    margin-bottom: 5px;
+}
+
+.recent-task p {
+    color: #9294a1;
+    font-size: 13px;
+}
+
+.task-status {
+    background: #eef2ff;
+    color: #4338ca;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+@media (max-width: 850px) {
+    .sidebar {
+        width: 190px;
+    }
+
+    .main-content {
+        padding: 25px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .app-layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .logo {
+        margin-bottom: 15px;
+    }
+
+    .sidebar nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .menu-heading {
+        margin-bottom: 8px;
+    }
+
+    .sidebar-bottom {
+        margin-top: 10px;
+    }
+
+    .main-content {
+        padding: 20px 15px;
+    }
+
+    .welcome-card {
+        padding: 25px;
+    }
+
+    .recent-task {
+        align-items: flex-start;
+    }
+}
+
+/* CREATE TASK PAGE */
+
+.task-form-card {
+    max-width: 850px;
+}
+
+.form-group {
+    margin-bottom: 23px;
+    width: 100%;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #34364b;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #dfe1e9;
+    border-radius: 8px;
+    background: white;
+    color: #303247;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.08);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.save-button,
+.cancel-button {
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.save-button {
+    border: none;
+    background: #4f46e5;
+    color: white;
+}
+
+.save-button:hover {
+    background: #3730a3;
+}
+
+.cancel-button {
+    background: #f1f2f6;
+    color: #55586b;
+}
+
+.cancel-button:hover {
+    background: #e5e7eb;
+}
+
+.success-message {
+    color: #15803d;
+    font-size: 14px;
+    margin-top: 12px;
+}
+
+.error-message {
+    color: #dc2626;
+    font-size: 14px;
+    margin-top: 12px;
+}
+
+@media (max-width: 600px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .form-actions {
+        flex-wrap: wrap;
+    }
+}
+/* View Tasks Page */
+
+.task-controls {
+    display: flex;
+    gap: 15px;
+    margin: 25px 0;
+    flex-wrap: wrap;
+}
+
+.task-controls input,
+.task-controls select {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+}
+
+.task-controls input {
+    flex: 1;
+    min-width: 200px;
+}
+
+.task-controls select {
+    min-width: 150px;
+}
+
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.task-card {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+.task-details h3 {
+    margin: 0 0 8px;
+    color: #25213d;
+}
+
+.task-details p {
+    margin: 5px 0;
+    color: #777;
+    font-size: 14px;
+}
+
+.task-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.task-actions button {
+    border: none;
+    padding: 9px 13px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.edit-button {
+    background: #eeeaff;
+    color: #6546d7;
+}
+
+.complete-button {
+    background: #e4f8ed;
+    color: #16834b;
+}
+
+.delete-button {
+    background: #ffe8e8;
+    color: #d33;
+}
+
+.add-task-button {
+    display: inline-block;
+    background: #6546d7;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+#page-message {
+    margin-top: 15px;
+    color: #6546d7;
+}
+
+/* Edit Modal */
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    width: 100%;
+    max-width: 550px;
+    padding: 30px;
+    border-radius: 15px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: #25213d;
+}
+
+@media (max-width: 650px) {
+    .task-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .task-controls {
+        flex-direction: column;
+    }
+
+    .task-controls input,
+    .task-controls select {
+        width: 100%;
+    }
+}
+/* ==============================
+   SMART REMINDERS
+================================ */
+
+.reminders-section {
+    margin-top: 30px;
+    margin-bottom: 35px;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-heading h2 {
+    color: #25213d;
+    font-size: 22px;
+    margin-bottom: 6px;
+}
+
+.section-heading p {
+    color: #888;
+    font-size: 14px;
+    margin: 0;
+}
+
+.reminder-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.reminder-card {
+    padding: 22px;
+    border-radius: 12px;
+    background: white;
+    border: 1px solid #eee;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+.reminder-label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.reminder-card h3 {
+    font-size: 30px;
+    margin: 15px 0 8px;
+}
+
+.reminder-card p {
+    font-size: 13px;
+    color: #777;
+    margin: 0;
+}
+
+.overdue-card {
+    border-left: 4px solid #e74c3c;
+}
+
+.overdue-card h3 {
+    color: #e74c3c;
+}
+
+.today-card {
+    border-left: 4px solid #e9a23b;
+}
+
+.today-card h3 {
+    color: #e9a23b;
+}
+
+.upcoming-card {
+    border-left: 4px solid #6546d7;
+}
+
+.upcoming-card h3 {
+    color: #6546d7;
+}
+
+/* Reminder List */
+
+.reminder-list {
+    margin-top: 25px;
+}
+
+.reminder-list h3 {
+    color: #25213d;
+    font-size: 17px;
+    margin: 20px 0 12px;
+}
+
+.reminder-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 16px 20px;
+    border-radius: 9px;
+    margin-bottom: 10px;
+    border: 1px solid #eee;
+}
+
+.reminder-item strong {
+    color: #25213d;
+}
+
+.reminder-item span {
+    color: #777;
+    font-size: 13px;
+}
+
+.reminder-item.overdue {
+    border-left: 4px solid #e74c3c;
+}
+
+.reminder-item.due-today {
+    border-left: 4px solid #e9a23b;
+}
+
+.reminder-item.upcoming {
+    border-left: 4px solid #6546d7;
+}
+
+/* Popup */
+
+.reminder-popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 20, 40, 0.55);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 2000;
+}
+
+.reminder-popup-content {
+    background: white;
+    width: 100%;
+    max-width: 420px;
+    padding: 35px;
+    border-radius: 16px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+}
+
+.reminder-popup-content h2 {
+    color: #25213d;
+    margin-bottom: 12px;
+}
+
+.reminder-popup-content p {
+    color: #777;
+    line-height: 1.6;
+    margin-bottom: 22px;
+}
+
+.reminder-popup-content button:not(.close-reminder) {
+    background: #6546d7;
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.close-reminder {
+    position: absolute;
+    right: 15px;
+    top: 12px;
+    background: none;
+    border: none;
+    font-size: 25px;
+    cursor: pointer;
+    color: #777;
+}
+
+/* Responsive */
+
+@media (max-width: 750px) {
+    .reminder-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .reminder-item {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+/* =================================
+   TASKFLOW SIDEBAR NAVIGATION
+================================= */
+
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    min-width: 250px;
+    background: #242044;
+    color: white;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.logo {
+    color: white;
+    font-size: 27px;
+    font-weight: 700;
+    margin: 10px 5px 55px;
+    letter-spacing: 0.5px;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    color: #d5d1e8;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 9px;
+    transition: all 0.25s ease;
+}
+
+.sidebar nav a:hover {
+    background: #39325f;
+    color: white;
+    padding-left: 21px;
+}
+
+.sidebar nav a.active {
+    background: #6546d7;
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(101, 70, 215, 0.25);
+}
+
+.logout-link {
+    display: block;
+    margin-top: auto;
+    padding: 14px 16px;
+    color: #ffb4b4;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 9px;
+    transition: all 0.25s ease;
+}
+
+.logout-link:hover {
+    background: rgba(255, 80, 80, 0.12);
+    color: #ff7777;
+}
+
+/* Main content layout */
+
+.main-content {
+    flex: 1;
+    min-width: 0;
+    padding: 40px 55px;
+    background: #f5f6fb;
+    box-sizing: border-box;
+}
+
+/* Responsive Sidebar */
+
+@media (max-width: 750px) {
+    .app-layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-width: 0;
+        min-height: auto;
+        padding: 15px;
+    }
+
+    .logo {
+        margin: 5px 5px 15px;
+    }
+
+    .sidebar nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .sidebar nav a {
+        padding: 10px;
+    }
+
+    .logout-link {
+        margin-top: 10px;
+    }
+
+    .main-content {
+        padding: 25px 18px;
+    }
+}
+/* ==========================================
+   PROFESSIONAL TASKFLOW HOME DASHBOARD
+========================================== */
+
+/* Dashboard Header */
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.dashboard-date {
+    color: #6546d7;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.dashboard-header h1 {
+    font-size: 30px;
+    color: #25213d;
+    margin: 0 0 8px;
+}
+
+.dashboard-subtitle {
+    color: #858399;
+    font-size: 14px;
+    margin: 0;
+}
+
+.add-task-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    background: #6546d7;
+    color: white;
+    text-decoration: none;
+    padding: 13px 20px;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.add-task-button:hover {
+    background: #5133c0;
+    transform: translateY(-2px);
+}
+
+
+/* Statistics Cards */
+
+.stats-container {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin: 25px 0 35px;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #eeedf5;
+    border-radius: 14px;
+    padding: 23px;
+    min-width: 0;
+    box-shadow: 0 4px 15px rgba(35, 29, 70, 0.04);
+    transition: 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px rgba(35, 29, 70, 0.08);
+}
+
+.stat-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.stat-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.total-stat .stat-icon {
+    background: #eeeaff;
+    color: #6546d7;
+}
+
+.pending-stat .stat-icon {
+    background: #fff3df;
+    color: #d99120;
+}
+
+.completed-stat .stat-icon {
+    background: #e4f8ed;
+    color: #21965a;
+}
+
+.stat-caption {
+    color: #9996a9;
+    font-size: 12px;
+}
+
+.stat-card h2 {
+    color: #25213d;
+    font-size: 30px;
+    margin: 20px 0 5px;
+}
+
+.stat-card > p {
+    color: #858399;
+    font-size: 14px;
+    margin: 0;
+}
+
+
+/* Section Headings */
+
+.reminders-section,
+.recent-tasks-section {
+    margin-top: 35px;
+    margin-bottom: 35px;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.section-heading h2 {
+    color: #25213d;
+    font-size: 21px;
+    margin: 0 0 6px;
+}
+
+.section-heading p {
+    color: #9996a9;
+    font-size: 13px;
+    margin: 0;
+}
+
+.view-all-link {
+    color: #6546d7;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* Smart Reminder Cards */
+
+.reminder-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.reminder-card {
+    background: white;
+    border: 1px solid #eeedf5;
+    border-radius: 13px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(35, 29, 70, 0.04);
+}
+
+.reminder-card-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #666477;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.reminder-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.overdue-card {
+    border-top: 3px solid #e45b5b;
+}
+
+.overdue-card .reminder-icon {
+    background: #ffe9e9;
+    color: #dc4545;
+}
+
+.overdue-card h3 {
+    color: #dc4545;
+}
+
+.today-card {
+    border-top: 3px solid #e9a23b;
+}
+
+.today-card .reminder-icon {
+    background: #fff2dc;
+    color: #d99120;
+}
+
+.today-card h3 {
+    color: #d99120;
+}
+
+.upcoming-card {
+    border-top: 3px solid #6546d7;
+}
+
+.upcoming-card .reminder-icon {
+    background: #eeeaff;
+    color: #6546d7;
+}
+
+.upcoming-card h3 {
+    color: #6546d7;
+}
+
+.reminder-card h3 {
+    font-size: 29px;
+    margin: 17px 0 5px;
+}
+
+.reminder-card p {
+    color: #9996a9;
+    font-size: 12px;
+    margin: 0;
+}
+
+
+/* Reminder List */
+
+.reminder-list {
+    margin-top: 20px;
+}
+
+.reminder-list h3 {
+    color: #25213d;
+    font-size: 15px;
+    margin: 20px 0 10px;
+}
+
+.reminder-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 18px;
+    margin-bottom: 10px;
+    background: white;
+    border: 1px solid #eeedf5;
+    border-radius: 9px;
+}
+
+.reminder-item strong {
+    color: #35314d;
+    font-size: 14px;
+}
+
+.reminder-item span {
+    color: #858399;
+    font-size: 12px;
+}
+
+.reminder-item.overdue {
+    border-left: 4px solid #e45b5b;
+}
+
+.reminder-item.due-today {
+    border-left: 4px solid #e9a23b;
+}
+
+.reminder-item.upcoming {
+    border-left: 4px solid #6546d7;
+}
+
+.reminder-empty {
+    background: #f0faf4;
+    color: #278653;
+    padding: 18px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+
+/* Recent Tasks */
+
+.recent-tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.recent-task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    background: white;
+    border: 1px solid #eeedf5;
+    padding: 18px 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(35, 29, 70, 0.03);
+}
+
+.recent-task-details h3 {
+    color: #35314d;
+    font-size: 15px;
+    margin: 0 0 7px;
+}
+
+.recent-task-details p {
+    color: #9996a9;
+    font-size: 12px;
+    margin: 0;
+}
+
+.recent-task-meta {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.priority-label,
+.status-label {
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.priority-label.high {
+    background: #ffe9e9;
+    color: #d74747;
+}
+
+.priority-label.medium {
+    background: #fff3df;
+    color: #c88620;
+}
+
+.priority-label.low {
+    background: #e7f5ff;
+    color: #3683b7;
+}
+
+.status-label.pending {
+    background: #fff3df;
+    color: #c88620;
+}
+
+.status-label.completed {
+    background: #e4f8ed;
+    color: #21965a;
+}
+
+.task-due-date {
+    color: #858399;
+    font-size: 11px;
+}
+
+
+/* Reminder Popup */
+
+.reminder-popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: rgba(25, 22, 48, 0.55);
+}
+
+.reminder-popup-content {
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    padding: 35px;
+    border-radius: 17px;
+    background: white;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.popup-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    background: #fff1df;
+    color: #d99120;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.reminder-popup-content h2 {
+    color: #25213d;
+    margin-bottom: 10px;
+}
+
+.reminder-popup-content p {
+    color: #858399;
+    line-height: 1.6;
+    margin-bottom: 22px;
+}
+
+.reminder-popup-content button:not(.close-reminder) {
+    background: #6546d7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.close-reminder {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: #858399;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+
+/* Responsive Dashboard */
+
+@media (max-width: 1000px) {
+    .main-content {
+        padding: 30px;
+    }
+
+    .stats-container,
+    .reminder-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .dashboard-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .dashboard-header h1 {
+        font-size: 24px;
+    }
+
+    .stats-container,
+    .reminder-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .recent-task-item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .recent-task-meta {
+        justify-content: flex-start;
+    }
+
+    .main-content {
+        padding: 22px 16px;
+    }
+}

@@ -1,0 +1,364 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TaskFlow | Task Management</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}?v=3">
+
+    <script src="{{ url_for('static', filename='script.js') }}"
+            defer></script>
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <span class="logo-icon">✓</span>
+            <h2>TaskFlow</h2>
+        </div>
+
+        <div class="sidebar-menu">
+
+            <p class="menu-heading">WORKSPACE</p>
+
+            <a href="#dashboard" class="menu-item active">
+                <span>▦</span>
+                Dashboard
+            </a>
+
+            <a href="#tasks-section" class="menu-item">
+                <span>☷</span>
+                My Tasks
+            </a>
+
+            <a href="#add-task-section" class="menu-item">
+                <span>＋</span>
+                Add Task
+            </a>
+
+        </div>
+
+        <div class="sidebar-bottom">
+            <div class="profile">
+                <div class="profile-avatar">T</div>
+
+                <div>
+                    <h4>TaskFlow User</h4>
+                    <p>Personal Workspace</p>
+                </div>
+            </div>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="dashboard">
+
+        <!-- HEADER -->
+        <header class="top-header">
+
+            <div>
+                <p class="welcome-text">WORKSPACE OVERVIEW</p>
+
+                <h1>Dashboard</h1>
+
+                <p class="header-subtitle">
+                    Here's an overview of your productivity.
+                </p>
+            </div>
+
+            <a href="#add-task-section" class="header-button">
+                + Create New Task
+            </a>
+
+        </header>
+
+
+        <!-- STATISTICS -->
+        <section class="stats-container">
+
+            <div class="stat-card total-card">
+
+                <div class="stat-card-top">
+                    <span>Total Tasks</span>
+                    <div class="stat-icon total-icon">▦</div>
+                </div>
+
+                <h2 id="total-tasks">0</h2>
+                <p class="stat-description">All your tasks</p>
+
+            </div>
+
+
+            <div class="stat-card pending-card">
+
+                <div class="stat-card-top">
+                    <span>Pending Tasks</span>
+                    <div class="stat-icon pending-icon">◷</div>
+                </div>
+
+                <h2 id="pending-tasks">0</h2>
+                <p class="stat-description">Tasks to be completed</p>
+
+            </div>
+
+
+            <div class="stat-card completed-card">
+
+                <div class="stat-card-top">
+                    <span>Completed Tasks</span>
+                    <div class="stat-icon completed-icon">✓</div>
+                </div>
+
+                <h2 id="completed-tasks">0</h2>
+                <p class="stat-description">Successfully completed</p>
+
+            </div>
+
+        </section>
+
+
+        <!-- DASHBOARD OVERVIEW -->
+        <section class="dashboard-overview">
+
+            <div class="overview-heading">
+                <div>
+                    <h2>Your Workspace</h2>
+                    <p>Keep your work organized and on track.</p>
+                </div>
+            </div>
+
+            <div class="overview-grid">
+
+                <div class="overview-card">
+
+                    <div class="overview-card-icon">✦</div>
+
+                    <div>
+                        <h3>Stay Organized</h3>
+                        <p>
+                            Break your work into manageable tasks
+                            and keep track of your progress.
+                        </p>
+                    </div>
+
+                    <a href="#add-task-section">
+                        Create a task →
+                    </a>
+
+                </div>
+
+
+                <div class="overview-card">
+
+                    <div class="overview-card-icon">✓</div>
+
+                    <div>
+                        <h3>Track Your Progress</h3>
+                        <p>
+                            Review pending and completed tasks
+                            from your personal workspace.
+                        </p>
+                    </div>
+
+                    <a href="#tasks-section">
+                        View all tasks →
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ADD TASK -->
+        <section class="content-card add-task-section"
+                 id="add-task-section">
+
+            <div class="section-heading">
+
+                <div>
+                    <p class="section-eyebrow">TASK MANAGEMENT</p>
+                    <h2>Add a New Task</h2>
+                    <p>Create and organize your work.</p>
+                </div>
+
+            </div>
+
+
+            <form id="task-form">
+
+                <div class="form-group">
+
+                    <label for="task-title">Task Title *</label>
+
+                    <input
+                        type="text"
+                        id="task-title"
+                        name="title"
+                        placeholder="Enter task title"
+                        maxlength="100"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="task-description">Description</label>
+
+                    <textarea
+                        id="task-description"
+                        name="description"
+                        placeholder="Add details about your task..."
+                        rows="3"
+                        maxlength="500"
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="task-priority">Priority</label>
+
+                        <select id="task-priority" name="priority">
+
+                            <option value="Low">Low</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="High">High</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="task-date">Due Date</label>
+
+                        <input
+                            type="date"
+                            id="task-date"
+                            name="due_date"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-buttons">
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                        id="submit-button"
+                    >
+                        + Create Task
+                    </button>
+
+                    <button
+                        type="button"
+                        class="cancel-button"
+                        id="cancel-button"
+                        hidden
+                    >
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- MY TASKS -->
+        <section class="content-card tasks-section"
+                 id="tasks-section">
+
+            <div class="section-heading">
+
+                <div>
+                    <p class="section-eyebrow">YOUR WORKSPACE</p>
+                    <h2>My Tasks</h2>
+                    <p>Manage, search and organize your tasks.</p>
+                </div>
+
+            </div>
+
+
+            <!-- FILTERS -->
+            <div class="filter-container">
+
+                <input
+                    type="text"
+                    id="search-task"
+                    placeholder="Search tasks..."
+                >
+
+                <select id="status-filter">
+
+                    <option value="All">All Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+
+                </select>
+
+
+                <select id="priority-filter">
+
+                    <option value="All">All Priorities</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+
+                </select>
+
+            </div>
+
+
+            <!-- TASK LIST -->
+            <div id="task-list" class="task-list">
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">☷</div>
+
+                    <h3>No tasks yet</h3>
+
+                    <p>Create your first task to get started!</p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FOOTER -->
+        <footer>
+            <p>© 2026 TaskFlow. Stay organized. Stay productive.</p>
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>

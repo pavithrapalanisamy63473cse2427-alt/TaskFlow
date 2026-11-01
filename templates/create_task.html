@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Task | TaskFlow</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages.css') }}">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+
+        <div class="logo">✓ TaskFlow</div>
+
+        <p class="menu-heading">MENU</p>
+
+        <nav>
+            <a href="{{ url_for('home') }}" class="nav-item">
+                ⌂ Home
+            </a>
+
+            <a href="{{ url_for('create_task_page') }}" class="nav-item active">
+                ＋ Create Task
+            </a>
+
+            <a href="{{ url_for('view_tasks_page') }}" class="nav-item">
+                ▤ View Tasks
+            </a>
+
+            <a href="{{ url_for('profile_page') }}" class="nav-item">
+                ♙ My Profile
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="{{ url_for('logout') }}" class="nav-item logout">
+                ↪ Logout
+            </a>
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h1>Create New Task</h1>
+                <p>Add a new task to your workspace.</p>
+            </div>
+
+            <div class="user-avatar">
+                {{ session.get('user_name', 'U')[0]|upper }}
+            </div>
+        </header>
+
+
+        <section class="content-card task-form-card">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Task Details</h2>
+                    <p>Enter the information for your new task.</p>
+                </div>
+            </div>
+
+
+            <form id="create-task-form">
+
+                <div class="form-group">
+                    <label for="title">Task Title *</label>
+
+                    <input
+                        type="text"
+                        id="title"
+                        maxlength="100"
+                        placeholder="Example: Complete Python assignment"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+
+                    <textarea
+                        id="description"
+                        maxlength="500"
+                        rows="5"
+                        placeholder="Add some details about your task..."
+                    ></textarea>
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label for="priority">Priority</label>
+
+                        <select id="priority">
+                            <option value="Low">Low</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="category">Task Category</label>
+
+                        <select id="category">
+                            <option value="Work">Work</option>
+                            <option value="Personal">Personal</option>
+                            <option value="College">College</option>
+                            <option value="Projects">Projects</option>
+                            <option value="Other" selected>Other</option>
+                        </select>
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+                    <label for="due-date">Due Date</label>
+
+                    <input type="date" id="due-date">
+                </div>
+
+
+                <div id="form-message" role="status" aria-live="polite"></div>
+
+
+                <div class="form-actions">
+
+                    <button type="submit" class="save-button">
+                        Save Task
+                    </button>
+
+                    <a href="{{ url_for('view_tasks_page') }}" class="cancel-button">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script>
+
+const form = document.getElementById("create-task-form");
+const message = document.getElementById("form-message");
+const dueDateInput = document.getElementById("due-date");
+
+
+// Prevent selecting a past date
+
+const today = new Date();
+
+const localDate = new Date(
+    today.getTime() - today.getTimezoneOffset() * 60000
+).toISOString().split("T")[0];
+
+dueDateInput.min = localDate;
+
+
+form.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const taskData = {
+        title: document.getElementById("title").value.trim(),
+        description: document.getElementById("description").value.trim(),
+        priority: document.getElementById("priority").value,
+        category: document.getElementById("category").value,
+        due_date: dueDateInput.value
+    };
+
+    message.textContent = "Saving task...";
+    message.className = "";
+
+    try {
+
+        const response = await fetch("/api/tasks", {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(taskData)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error || "Unable to save task.");
+        }
+
+        message.textContent = "Task created successfully!";
+        message.className = "success-message";
+
+        form.reset();
+
+        setTimeout(() => {
+            window.location.href = "{{ url_for('view_tasks_page') }}";
+        }, 800);
+
+    } catch (error) {
+
+        message.textContent = error.message;
+        message.className = "error-message";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | TaskFlow</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/pages.css') }}">
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <h2 class="logo">TaskFlow<span>.</span></h2>
+
+        <p class="sidebar-label">WORKSPACE</p>
+
+        <nav>
+            <a href="{{ url_for('home') }}" class="active">
+                <span>⌂</span> Dashboard
+            </a>
+
+            <a href="{{ url_for('create_task_page') }}">
+                <span>＋</span> Create Task
+            </a>
+
+            <a href="{{ url_for('view_tasks_page') }}">
+                <span>▤</span> My Tasks
+            </a>
+
+            <a href="{{ url_for('profile_page') }}">
+    <span>♙</span> My Profile
+</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="{{ url_for('logout') }}" class="logout-link">
+                <span>↪</span> Logout
+            </a>
+        </div>
+
+    </aside>
+
+
+    <!-- Main Dashboard -->
+    <main class="main-content">
+
+        <!-- Top Header -->
+        <header class="dashboard-header">
+
+            <div>
+                <p class="dashboard-date" id="current-date"></p>
+
+                <h1>
+                    Welcome back, {{ session.get('user_name', 'User') }}!
+                </h1>
+
+                <p class="dashboard-subtitle">
+                    Here's what's happening with your tasks today.
+                </p>
+            </div>
+
+            <a href="{{ url_for('create_task_page') }}"
+               class="add-task-button">
+                + Create New Task
+            </a>
+
+        </header>
+
+
+        <!-- Statistics -->
+        <section class="stats-container">
+
+            <div class="stat-card total-stat">
+                <div class="stat-top">
+                    <span class="stat-icon">▤</span>
+                    <span class="stat-caption">All your tasks</span>
+                </div>
+
+                <h2 id="total-tasks">0</h2>
+                <p>Total Tasks</p>
+            </div>
+
+
+            <div class="stat-card pending-stat">
+                <div class="stat-top">
+                    <span class="stat-icon">◷</span>
+                    <span class="stat-caption">Need attention</span>
+                </div>
+
+                <h2 id="pending-tasks">0</h2>
+                <p>Pending Tasks</p>
+            </div>
+
+
+            <div class="stat-card completed-stat">
+                <div class="stat-top">
+                    <span class="stat-icon">✓</span>
+                    <span class="stat-caption">Successfully finished</span>
+                </div>
+
+                <h2 id="completed-tasks">0</h2>
+                <p>Completed Tasks</p>
+            </div>
+
+        </section>
+
+
+        <!-- Smart Reminders -->
+        <section class="reminders-section">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Smart Reminders</h2>
+                    <p>Keep track of important deadlines.</p>
+                </div>
+            </div>
+
+
+            <div class="reminder-summary">
+
+                <div class="reminder-card overdue-card">
+                    <div class="reminder-card-top">
+                        <span class="reminder-icon">!</span>
+                        <span>Overdue</span>
+                    </div>
+
+                    <h3 id="overdue-count">0</h3>
+                    <p>Tasks past their deadline</p>
+                </div>
+
+
+                <div class="reminder-card today-card">
+                    <div class="reminder-card-top">
+                        <span class="reminder-icon">◷</span>
+                        <span>Due Today</span>
+                    </div>
+
+                    <h3 id="today-count">0</h3>
+                    <p>Tasks to complete today</p>
+                </div>
+
+
+                <div class="reminder-card upcoming-card">
+                    <div class="reminder-card-top">
+                        <span class="reminder-icon">▣</span>
+                        <span>Upcoming</span>
+                    </div>
+
+                    <h3 id="upcoming-count">0</h3>
+                    <p>Due within three days</p>
+                </div>
+
+            </div>
+
+
+            <div id="reminder-list" class="reminder-list">
+                <p>Loading reminders...</p>
+            </div>
+
+        </section>
+
+
+        <!-- Recent Tasks -->
+        <section class="recent-tasks-section">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Recent Tasks</h2>
+                    <p>Take a look at your latest activities.</p>
+                </div>
+
+                <a href="{{ url_for('view_tasks_page') }}"
+                   class="view-all-link">
+                    View All →
+                </a>
+            </div>
+
+            <div id="recent-tasks" class="recent-tasks-list">
+                <p>Loading tasks...</p>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- Reminder Popup -->
+<div id="reminder-popup" class="reminder-popup">
+
+    <div class="reminder-popup-content">
+
+        <button type="button"
+                id="close-reminder-popup"
+                class="close-reminder">
+            &times;
+        </button>
+
+        <div class="popup-icon">!</div>
+
+        <h2>Task Reminder</h2>
+
+        <p id="reminder-popup-message">
+            You have pending tasks that need your attention.
+        </p>
+
+        <button type="button" id="view-reminders-button">
+            View Reminders
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let allTasks = [];
+
+
+    // Display Current Date
+    function displayCurrentDate() {
+
+        const today = new Date();
+
+        document.getElementById("current-date").textContent =
+            today.toLocaleDateString("en-IN", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
+
+    }
+
+
+    // Load Dashboard Data
+    async function loadDashboard() {
+
+        const recentContainer =
+            document.getElementById("recent-tasks");
+
+        const reminderList =
+            document.getElementById("reminder-list");
+
+        try {
+
+            const response = await fetch("/api/tasks");
+
+            if (!response.ok) {
+                throw new Error("Unable to load dashboard data.");
+            }
+
+            allTasks = await response.json();
+
+            updateStatistics();
+            displayRecentTasks();
+            loadSmartReminders();
+
+        } catch (error) {
+
+            recentContainer.textContent = error.message;
+            reminderList.textContent = error.message;
+
+        }
+
+    }
+
+
+    // Dashboard Statistics
+    function updateStatistics() {
+
+        const total = allTasks.length;
+
+        const completed = allTasks.filter(task =>
+            task.status === "Completed"
+        ).length;
+
+        const pending = allTasks.filter(task =>
+            task.status === "Pending"
+        ).length;
+
+        document.getElementById("total-tasks").textContent = total;
+
+        document.getElementById("pending-tasks").textContent = pending;
+
+        document.getElementById("completed-tasks").textContent = completed;
+
+    }
+
+
+    // Display Recent Tasks
+    function displayRecentTasks() {
+
+        const container =
+            document.getElementById("recent-tasks");
+
+        container.replaceChildren();
+
+        if (allTasks.length === 0) {
+
+            const empty = document.createElement("p");
+
+            empty.textContent =
+                "No tasks yet. Create your first task to get started!";
+
+            container.appendChild(empty);
+
+            return;
+        }
+
+        allTasks.slice(0, 5).forEach(task => {
+
+            const card = document.createElement("div");
+            card.className = "recent-task-item";
+
+            const details = document.createElement("div");
+            details.className = "recent-task-details";
+
+            const title = document.createElement("h3");
+            title.textContent = task.title;
+
+            const description = document.createElement("p");
+
+            description.textContent =
+                task.description || "No description provided";
+
+            details.append(title, description);
+
+
+            const meta = document.createElement("div");
+            meta.className = "recent-task-meta";
+
+            const priority = document.createElement("span");
+
+            priority.className =
+                "priority-label " + task.priority.toLowerCase();
+
+            priority.textContent = task.priority;
+
+            const status = document.createElement("span");
+
+            status.className =
+                "status-label " + task.status.toLowerCase();
+
+            status.textContent = task.status;
+
+            const dueDate = document.createElement("span");
+            dueDate.className = "task-due-date";
+
+            dueDate.textContent =
+                task.due_date ? "Due: " + task.due_date : "No due date";
+
+            meta.append(priority, status, dueDate);
+
+            card.append(details, meta);
+
+            container.appendChild(card);
+
+        });
+
+    }
+
+
+    // Smart Reminders
+    function loadSmartReminders() {
+
+        const reminderList =
+            document.getElementById("reminder-list");
+
+        const now = new Date();
+
+        const today = [
+            now.getFullYear(),
+            String(now.getMonth() + 1).padStart(2, "0"),
+            String(now.getDate()).padStart(2, "0")
+        ].join("-");
+
+
+        const limitDate = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() + 3
+        );
+
+        const upcomingEnd = [
+            limitDate.getFullYear(),
+            String(limitDate.getMonth() + 1).padStart(2, "0"),
+            String(limitDate.getDate()).padStart(2, "0")
+        ].join("-");
+
+
+        const pendingTasks = allTasks.filter(task =>
+            task.status === "Pending" && task.due_date
+        );
+
+
+        const overdueTasks = pendingTasks.filter(task =>
+            task.due_date < today
+        );
+
+        const todayTasks = pendingTasks.filter(task =>
+            task.due_date === today
+        );
+
+        const upcomingTasks = pendingTasks.filter(task =>
+            task.due_date > today &&
+            task.due_date <= upcomingEnd
+        );
+
+
+        document.getElementById("overdue-count").textContent =
+            overdueTasks.length;
+
+        document.getElementById("today-count").textContent =
+            todayTasks.length;
+
+        document.getElementById("upcoming-count").textContent =
+            upcomingTasks.length;
+
+
+        reminderList.replaceChildren();
+
+
+        const groups = [
+            {
+                title: "Overdue Tasks",
+                tasks: overdueTasks,
+                className: "overdue"
+            },
+            {
+                title: "Due Today",
+                tasks: todayTasks,
+                className: "due-today"
+            },
+            {
+                title: "Upcoming Tasks",
+                tasks: upcomingTasks,
+                className: "upcoming"
+            }
+        ];
+
+
+        let totalReminders = 0;
+
+        groups.forEach(group => {
+
+            if (group.tasks.length === 0) return;
+
+            totalReminders += group.tasks.length;
+
+            const heading = document.createElement("h3");
+            heading.textContent = group.title;
+
+            reminderList.appendChild(heading);
+
+
+            group.tasks.forEach(task => {
+
+                const item = document.createElement("div");
+
+                item.className =
+                    "reminder-item " + group.className;
+
+                const name = document.createElement("strong");
+                name.textContent = task.title;
+
+                const date = document.createElement("span");
+                date.textContent = "Due: " + task.due_date;
+
+                item.append(name, date);
+
+                reminderList.appendChild(item);
+
+            });
+
+        });
+
+
+        if (totalReminders === 0) {
+
+            const empty = document.createElement("div");
+
+            empty.className = "reminder-empty";
+
+            empty.textContent =
+                "You're all caught up! No urgent reminders.";
+
+            reminderList.appendChild(empty);
+
+        }
+
+
+        // Display Popup
+        if (totalReminders > 0) {
+
+            document.getElementById(
+                "reminder-popup-message"
+            ).textContent =
+                "You have " + totalReminders +
+                " pending task(s) that need your attention.";
+
+            document.getElementById(
+                "reminder-popup"
+            ).style.display = "flex";
+
+
+            // Browser Notification
+            showBrowserNotification(
+                overdueTasks,
+                todayTasks,
+                upcomingTasks
+            );
+
+        }
+
+    }
+
+
+    // Browser Notifications
+    function showBrowserNotification(
+        overdueTasks,
+        todayTasks,
+        upcomingTasks
+    ) {
+
+        // Check browser notification support
+        if (!("Notification" in window)) {
+
+            console.log(
+                "Browser notifications are not supported."
+            );
+
+            return;
+        }
+
+
+        // Check notification permission
+        if (Notification.permission !== "granted") {
+
+            console.log(
+                "Please allow notifications for TaskFlow."
+            );
+
+            return;
+        }
+
+
+        const allReminderTasks = [
+            ...overdueTasks,
+            ...todayTasks,
+            ...upcomingTasks
+        ];
+
+
+        // Unique key for today's reminders
+        const reminderKey =
+            "taskflow-notified-" +
+            new Date().toISOString().slice(0, 10);
+
+
+        const taskIds = allReminderTasks
+            .map(task => task.id)
+            .sort()
+            .join(",");
+
+
+        // Avoid repeated notifications on refresh
+        if (
+            sessionStorage.getItem(reminderKey) === taskIds
+        ) {
+
+            return;
+
+        }
+
+
+        let message = "";
+
+
+        if (overdueTasks.length > 0) {
+
+            message += overdueTasks.length +
+                " overdue task(s). ";
+
+        }
+
+
+        if (todayTasks.length > 0) {
+
+            message += todayTasks.length +
+                " task(s) due today. ";
+
+        }
+
+
+        if (upcomingTasks.length > 0) {
+
+            message += upcomingTasks.length +
+                " upcoming task(s).";
+
+        }
+
+
+        // Create Notification
+        const notification = new Notification(
+            "TaskFlow - Smart Reminder",
+            {
+                body: message,
+                tag: reminderKey
+            }
+        );
+
+
+        // Open TaskFlow when notification is clicked
+        notification.onclick = function () {
+
+            window.focus();
+
+            document.querySelector(
+                ".reminders-section"
+            ).scrollIntoView({
+                behavior: "smooth"
+            });
+
+            notification.close();
+
+        };
+
+
+        // Save notification state
+        sessionStorage.setItem(reminderKey, taskIds);
+
+    }
+
+
+    // Close Reminder Popup
+    document.getElementById("close-reminder-popup")
+        .addEventListener("click", function() {
+
+            document.getElementById(
+                "reminder-popup"
+            ).style.display = "none";
+
+        });
+
+
+    // View Reminders Button
+    document.getElementById("view-reminders-button")
+        .addEventListener("click", function() {
+
+            document.getElementById(
+                "reminder-popup"
+            ).style.display = "none";
+
+            document.querySelector(
+                ".reminders-section"
+            ).scrollIntoView({
+                behavior: "smooth"
+            });
+
+        });
+
+
+    // Initialize Dashboard
+    displayCurrentDate();
+
+    loadDashboard();
+
+</script>
+
+</body>
+</html>
